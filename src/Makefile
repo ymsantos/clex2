@@ -1,0 +1,76 @@
+CC = g++
+OUTPUT=main
+FLAGS = -lboost_system -lboost_filesystem
+PYTHON_FLAG = -I/usr/include/python2.7
+OBJS = Object.o Cluster.o DataSet.o Partition.o Similarity.o Euclidean.o Pearson.o ValidationIndex.o InformationTheory.o NMIIndex.o VIIndex.o CRIndex.o RelationSDN.o SimilarityMatrix.o NnList.o Connectivity.o Deviation.o Silhouette.o Clex.o
+
+_Clex_module.so: Clex.i Clex.h $(OBJS)
+	swig -python -c++ Clex.i
+	$(CC) -c -fpic Clex.cpp Clex_wrap.cxx $(PYTHON_FLAG)
+	$(CC) -shared *.o -o _Clex_module.so $(FLAGS)
+
+Clex.o: Clex.h Clex.cpp Partition.o DataSet.o ValidationIndex.o Similarity.o Euclidean.o Pearson.o RelationSDN.o NMIIndex.o VIIndex.o CRIndex.o Connectivity.o Deviation.o Silhouette.o SimilarityMatrix.o
+	$(CC) -c Clex.cpp $(FLAGS)
+
+Silhouette.o: ValidationIndex/Silhouette.h ValidationIndex/Silhouette.cpp DataSet.o Partition.o RelationSDN.o ValidationIndex.o
+	$(CC) -c ValidationIndex/Silhouette.cpp -fPIC
+
+Deviation.o: ValidationIndex/Deviation.h ValidationIndex/Deviation.cpp DataSet.o Partition.o ValidationIndex.o RelationSDN.o
+	$(CC) -c ValidationIndex/Deviation.cpp -fPIC
+
+Connectivity.o: ValidationIndex/Connectivity.h ValidationIndex/Connectivity.cpp ValidationIndex.o RelationSDN.o
+	$(CC) -c ValidationIndex/Connectivity.cpp -fPIC
+
+CRIndex.o: ValidationIndex/CRIndex.h ValidationIndex/CRIndex.cpp ValidationIndex.o Exception.h Partition.o
+	$(CC) -c ValidationIndex/CRIndex.cpp -fPIC
+
+VIIndex.o: ValidationIndex/VIIndex.h ValidationIndex/VIIndex.cpp ValidationIndex.o Exception.h Partition.o InformationTheory.o
+	$(CC) -c ValidationIndex/VIIndex.cpp -fPIC
+
+NMIIndex.o: ValidationIndex/NMIIndex.h ValidationIndex/NMIIndex.cpp ValidationIndex.o Exception.h Partition.o InformationTheory.o
+	$(CC) -c ValidationIndex/NMIIndex.cpp -fPIC
+
+InformationTheory.o: InformationTheory.h InformationTheory.cpp Partition.o
+	$(CC) -c InformationTheory.cpp -fPIC
+
+ClusteringAlgorithms.o: ClusteringAlgorithms.h ClusteringAlgorithms.cpp Partition.o SettingsAlgorithm.o DataSet.o Similarity.o
+	$(CC) -c ClusteringAlgorithms.cpp -fPIC
+
+SettingsAlgorithm.o: SettingsAlgorithm.h SettingsAlgorithm.cpp
+	$(CC) -c SettingsAlgorithm.cpp -fPIC
+
+ValidationIndex.o: ValidationIndex.h ValidationIndex.cpp Partition.o RelationSDN.o
+	$(CC) -c ValidationIndex.cpp -lm -fPIC
+
+RelationSDN.o: RelationSDN.h RelationSDN.cpp DataSet.o SimilarityMatrix.h SimilarityMatrix.cpp NnList.o
+	$(CC) -c RelationSDN.cpp -fPIC
+
+SimilarityMatrix.o: SimilarityMatrix.h SimilarityMatrix.cpp RelationSDN.h RelationSDN.cpp DataSet.o Euclidean.o Object.o Pearson.o
+	$(CC) -c SimilarityMatrix.cpp $(FLAGS) -fPIC
+
+NnList.o: NnList.h NnList.cpp RelationSDN.h RelationSDN.cpp SimilarityMatrix.o DataSet.o
+	$(CC) -c NnList.cpp -fPIC
+
+Euclidean.o: Euclidean.h Euclidean.cpp Similarity.o
+	$(CC) -c Euclidean.cpp -lm -fPIC
+
+Pearson.o: Pearson.h Pearson.cpp Similarity.o
+	$(CC) -c Pearson.cpp -lm -fPIC
+
+Similarity.o: Similarity.h Similarity.cpp Object.o
+	$(CC) -c Similarity.cpp -fPIC
+
+Partition.o: Partition.h Partition.cpp Cluster.o DataSet.o
+	$(CC) -c Partition.cpp $(FLAGS) -fPIC
+
+Cluster.o: Cluster.h Cluster.cpp DataSet.o
+	$(CC) -c Cluster.cpp $(FLAGS) -fPIC
+
+DataSet.o: DataSet.h DataSet.cpp Object.o
+	$(CC) -c DataSet.cpp $(FLAGS) -fPIC
+
+Object.o: Object.h Object.cpp
+	$(CC) -c Object.cpp -fPIC
+
+clean:
+	rm *~ *.o *Clex_module* *.cxx *.pyc
