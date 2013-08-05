@@ -32,8 +32,6 @@ class MainWindow(Gtk.Window):
 		# Create a new window
 		Gtk.Window.__init__(self, title="Clustering Experimenter")
 		
-		# clustering program path
-		self.clustering_program_path = "clustering/cluster"
 		
 		# Containers
 		self.vbox = Gtk.VBox(spacing=6)
@@ -56,7 +54,7 @@ class MainWindow(Gtk.Window):
 		self.bbox3.set_layout(Gtk.ButtonBoxStyle.START)
 		
 		# Algorithms Frame
-		self.frame_algorithms = Gtk.Frame(label="Set Algorithms")
+		self.frame_algorithms = Gtk.Frame(label="Algorithms Preferences")
 		self.bbox2a = Gtk.VBox(False, 0)##
 		self.bbox2b = Gtk.HBox(False, 0)##
 		self.separator = Gtk.HSeparator()
@@ -95,20 +93,12 @@ class MainWindow(Gtk.Window):
 		self.button_similarity = Gtk.Button(label="Set Similarity Measure")
 		self.button_external_validation = Gtk.Button(label="Set External Validation Indexes")
 		self.button_internal_validation = Gtk.Button(label="Set Internal Validation Indexes")
-		#self.button_algorithm = Gtk.Button(label="Set Algorithms")
+		self.button_algorithm = Gtk.Button(label="Set Algorithms")
 		self.button_execute = Gtk.Button(stock=Gtk.STOCK_EXECUTE)
 		self.button_save = Gtk.Button(stock=Gtk.STOCK_SAVE)
 		self.button_open = Gtk.Button(stock=Gtk.STOCK_OPEN)
 		self.button_close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
 		
-		# Selection of the algorithms
-		self.algorithm_param_list = []
-		self.check_alg1 = Gtk.CheckButton(label="K-means")
-		self.check_alg2 = Gtk.CheckButton(label="Pairwise complete-linkage")
-		self.check_alg3 = Gtk.CheckButton(label="Pairwise single-linkage")
-		self.check_alg4 = Gtk.CheckButton(label="Pairwise centroid-linkage")
-		self.check_alg5 = Gtk.CheckButton(label="Pairwise average-linkage")
-		self.check_alg6 = Gtk.CheckButton(label="Algorithm")
 		
 		# Algorithms Parameters
 		self.label_min_cluster = Gtk.Label("Min. Cluster number: ")
@@ -121,9 +111,9 @@ class MainWindow(Gtk.Window):
 		self.spin_max_cluster.set_adjustment(Gtk.Adjustment(2, 2, 100, 1, 10, 0))
 		self.spin_max_cluster.set_numeric(True)
 		
-		self.label_times = Gtk.Label("Times to execute: ")
+		self.label_times = Gtk.Label("Times to execute\nnon-deterministic\nalgorithms: ")
 		self.spin_times = Gtk.SpinButton()
-		self.spin_times.set_adjustment(Gtk.Adjustment(1, 1, 100, 1, 10, 0))
+		self.spin_times.set_adjustment(Gtk.Adjustment(30, 1, 100, 1, 10, 0))
 		self.spin_times.set_numeric(True)
 		
 		self.hbox_minK.pack_start(self.label_min_cluster, True, False, 0)
@@ -138,18 +128,11 @@ class MainWindow(Gtk.Window):
 		self.button_similarity.connect("clicked", self.on_button_similarity_clicked)
 		self.button_external_validation.connect("clicked", self.on_button_external_validation_clicked)
 		self.button_internal_validation.connect("clicked", self.on_button_internal_validation_clicked)
-		#self.button_algorithm.connect("clicked", self.on_button_algorithm_clicked)
+		self.button_algorithm.connect("clicked", self.on_button_algorithm_clicked)
 		self.button_execute.connect("clicked", self.on_button_execute_clicked)
 		self.button_save.connect("clicked", self.on_button_save_clicked)
 		self.button_open.connect("clicked", self.on_button_open_clicked)
 		self.button_close.connect("clicked", self.on_button_close_clicked)
-		
-		self.check_alg1.connect("clicked", self.on_check_alg1_clicked)
-		self.check_alg2.connect("clicked", self.on_check_alg2_clicked)
-		self.check_alg3.connect("clicked", self.on_check_alg3_clicked)
-		self.check_alg4.connect("clicked", self.on_check_alg4_clicked)
-		self.check_alg5.connect("clicked", self.on_check_alg5_clicked)
-		#self.check_alg6.connect("clicked", self.on_check_alg6_clicked)
 
 		# put the buttons into the containers
 		self.bbox1.pack_start(self.button_dataset, True, True, 6)
@@ -158,20 +141,14 @@ class MainWindow(Gtk.Window):
 		self.bbox2.pack_start(self.button_similarity, True, True, 0)
 		self.bbox2.pack_start(self.button_external_validation, True, True, 0)
 		self.bbox2.pack_start(self.button_internal_validation, True, True, 0)
-		#self.bbox2.pack_start(self.button_algorithm, True, True, 0)
+		self.bbox2.pack_start(self.button_algorithm, True, True, 0)
 		
-		self.bbox2a.pack_start(self.check_alg1, True, True, 4)
-		self.bbox2a.pack_start(self.check_alg2, True, True, 4)
-		self.bbox2a.pack_start(self.check_alg3, True, True, 4)
-		self.bbox2a.pack_start(self.check_alg4, True, True, 4)
-		self.bbox2a.pack_start(self.check_alg5, True, True, 4)
-		self.bbox2a.pack_start(self.bbox2b, True, True, 4)##
-		self.bbox2b.pack_start(self.check_alg6, True, True, 0)
-		self.bbox2b.pack_start(self.label_times, True, False, 0)
-		self.bbox2b.pack_start(self.spin_times, True, False, 0)
-		self.bbox2a.pack_start(self.separator, True, True, 2)
 		self.bbox2a.pack_start(self.hbox_minK, True, True, 4)##
 		self.bbox2a.pack_start(self.hbox_maxK, True, True, 4)##
+		self.bbox2a.pack_start(self.separator, True, True, 2)
+		self.bbox2a.pack_start(self.bbox2b, True, True, 4)##
+		self.bbox2b.pack_start(self.label_times, True, False, 0)
+		self.bbox2b.pack_start(self.spin_times, True, False, 0)
 
 		self.bbox3.pack_start(self.button_execute, True, True, 0)
 		self.bbox3.pack_start(self.button_save, True, True, 0)
@@ -196,12 +173,14 @@ class MainWindow(Gtk.Window):
 	def on_button_real_partition_clicked(self, widget, data):
 		self.dataset_list = self.win_dataset.get_selection_list()
 		self.win_real_partition.set_dataset_list(self.dataset_list)
+		self.win_real_partition.set_dataset_partition_dic(self.dataset_list)
 		self.win_real_partition.show_all()
 
 	# Open window for selecting Generated Partitions
 	def on_button_generated_partition_clicked(self, widget, data):
 		self.dataset_list = self.win_dataset.get_selection_list()
 		self.win_generated_partition.set_dataset_list(self.dataset_list)
+		self.win_generated_partition.set_dataset_partition_dic(self.dataset_list)
 		self.win_generated_partition.show_all()
 
 	# Open window for selecting External Validation Indexes to be used
@@ -213,61 +192,14 @@ class MainWindow(Gtk.Window):
 		self.win_internal_validation.show_all()
 		
 	# Open window for selecting Clustering Algorithms to be used
-#	def on_button_algorithm_clicked(self, widget):
-#		self.win_algorithm.show_all()
+	def on_button_algorithm_clicked(self, widget):
+		self.win_algorithm.show_all()
 
 	# Open window for selecting Similarity Indexes to be used
 	def on_button_similarity_clicked(self, widget):
 		self.win_similarity.show_all()
 	
-	# Add K-means in algorithms list to be executed
-	def on_check_alg1_clicked(self, widget):#########
-		if widget.get_active():
-			self.algorithm_param_list.append("k")
-		else:
-			self.algorithm_param_list.remove("k")
-	
-	# Add Pairwise complete-linkage in algorithms list to be executed
-	def on_check_alg2_clicked(self, widget):#########
-		if widget.get_active():
-			self.algorithm_param_list.append("m")
-		else:
-			self.algorithm_param_list.remove("m")
-	
-	# Add Pairwise single-linkage in algorithms list to be executed
-	def on_check_alg3_clicked(self, widget):#########
-		if widget.get_active():
-			self.algorithm_param_list.append("s")
-		else:
-			self.algorithm_param_list.remove("s")
-	
-	# Add Pairwise centroid-linkage in algorithms list to be executed
-	def on_check_alg4_clicked(self, widget):#########
-		if widget.get_active():
-			self.algorithm_param_list.append("c")
-		else:
-			self.algorithm_param_list.remove("c")
-	
-	# Add Pairwise average-linkage in algorithms list to be executed
-	def on_check_alg5_clicked(self, widget):#########
-		if widget.get_active():
-			self.algorithm_param_list.append("a")
-		else:
-			self.algorithm_param_list.remove("a")
-	
-	# Add Algorithm in algorithms list to be executed
-#	def on_check_alg6_clicked(self, widget):#########
-#		if widget.get_active():
-#			do
-#		else:
-#			do
 
-
-	def get_algorithm_param_list(self):
-		return self.algorithm_param_list
-
-	def get_clustering_program_path(self):
-		return self.clustering_program_path
 	
 	def get_minK(self):
 		return self.spin_min_cluster.get_value_as_int()
@@ -315,7 +247,7 @@ class MainWindow(Gtk.Window):
 		
 		# instanciate Similarity Measures
 		print "[%.2fs] Setting Similarity measure..." % self.get_time()
-		self.win_similarity_list = self.win_similarity.get_selection_list()
+		self.win_similarity_list = self.win_similarity.get_similarity_param_list()
 
 		if(self.win_similarity_list == []):
 			print "[%.2fs] Error: No Similarities selected." % self.get_time()
@@ -346,7 +278,7 @@ class MainWindow(Gtk.Window):
 
 		# instanciate External Validation Indexes
 		print "\n[%.2fs] Setting External Validation Indexes..." % self.get_time()
-		self.win_external_validation_list = self.win_external_validation.get_selection_list()
+		self.win_external_validation_list = self.win_external_validation.get_validation_list()
 		if(self.win_external_validation_list == []):
 			print "[%.2fs] No External Validation Indexes selected." % self.get_time()
 		else:
@@ -358,7 +290,7 @@ class MainWindow(Gtk.Window):
 
 		# instanciate Internal Validation Indexes
 		print "\n[%.2fs] Setting Internal Validation Indexes..." % self.get_time()
-		self.win_internal_validation_list = self.win_internal_validation.get_selection_list()
+		self.win_internal_validation_list = self.win_internal_validation.get_validation_list()
 
 		if(self.win_internal_validation_list == []):
 			print "[%.2fs] No Internal Validation Indexes selected." % self.get_time()
@@ -380,9 +312,9 @@ class MainWindow(Gtk.Window):
 		if(self.alg_param_list== []):
 			print "[%.2fs] No Clustering Algorithms selected." % self.get_time()
 		else:
-			self.minK = self.win_algorithm.get_minK()
-			self.maxK = self.win_algorithm.get_maxK()
-			self.times_to_run = self.win_algorithm.get_execution_times()
+			self.minK = self.get_minK()
+			self.maxK = self.get_maxK()
+			self.times_to_run = self.get_execution_times()
 			self.sim_list = self.win_similarity.get_similarity_param_list()
 			for dataset in self.dataset_list:
 				for alg_param in self.alg_param_list:
@@ -442,13 +374,25 @@ class MainWindow(Gtk.Window):
 			return
 
 		# Construct JSON structure
-		self.savedata = { 'ExperimentName': None, 'Directory': None, 'MinCluster': None, 'MaxCluster': None, 'ExecutionTimes': None, 'ShowTime': None, 'DataSet': [], 'RealPartition': [], 'GeneratedPartition': []}
+		# self.savedata = { 'ExperimentName': None, 'Directory': None, 'MinCluster': None, 'MaxCluster': None, 'ExecutionTimes': None, 'ShowTime': None, 'DataSet': [], 'RealPartition': [], 'GeneratedPartition': []}
+		self.savedata =	{ 'ExperimentName': None, 'Directory': None, 'MinCluster': None, 'MaxCluster': None,
+		'ExecutionTimes': None, 'SimilarityMeasure': [], 'ExternalValidationIndexes': [],
+		'InternalValidationIndexes': [], 'Algorithms': [], 'DataSet': []}
 		self.savedata["ExperimentName"] = self.entry_name.get_text()
 		self.savedata["Directory"] = self.entry_dir.get_text()
 		self.savedata["MinCluster"] = self.spin_min_cluster.get_value()
 		self.savedata["MaxCluster"] = self.spin_max_cluster.get_value()
 		self.savedata["ExecutionTimes"] = self.spin_times.get_value()
-		self.savedata["ShowTime"] = self.check_time.get_active()
+		self.savedata["SimilarityMeasure"] = self.win_similarity.get_similarity_param_list()
+		self.savedata["ExternalValidationIndexes"] = self.win_external_validation.get_validation_list()
+		self.savedata["InternalValidationIndexes"] = self.win_internal_validation.get_validation_list()
+		self.savedata["Algorithms"] = self.win_algorithm.get_algorithm_param_list()
+		self.savedata["DataSet"] = self.win_dataset.get_dataset_list()
+		if len(self.win_real_partition.dataset_partition_dic) > 0:
+			self.savedata["DataSet_RealPartition"] = self.win_real_partition.get_dataset_partition_dic()
+		if len(self.win_generated_partition.dataset_partition_dic) > 0:
+			self.savedata["DataSet_GeneratedPartition"] = self.win_generated_partition.get_dataset_partition_dic()
+		# self.savedata["ShowTime"] = self.check_time.get_active()
 
 		# Write to the file
 		print "Saving Configuration..."
@@ -489,7 +433,20 @@ class MainWindow(Gtk.Window):
 		self.spin_min_cluster.set_value(self.readdata["MinCluster"])
 		self.spin_max_cluster.set_value(self.readdata["MaxCluster"])
 		self.spin_times.set_value(self.readdata["ExecutionTimes"])
-		self.check_time.set_active(self.readdata["ShowTime"])
+		self.win_similarity.set_loaded_settings(self.readdata["SimilarityMeasure"])
+		self.win_external_validation.set_loaded_settings(self.readdata["ExternalValidationIndexes"], "External")
+		self.win_internal_validation.set_loaded_settings(self.readdata["InternalValidationIndexes"], "Internal")
+		self.win_algorithm.set_loaded_settings(self.readdata["Algorithms"])
+		self.win_dataset.set_loaded_settings(self.readdata["DataSet"])
+		self.win_real_partition.set_dataset_list(self.win_dataset.get_selection_list())
+		self.win_generated_partition.set_dataset_list(self.win_dataset.get_selection_list())
+		self.win_real_partition.clean_settings()
+		self.win_generated_partition.clean_settings()
+		if self.readdata.has_key("DataSet_RealPartition"):
+			self.win_real_partition.set_loaded_settings(self.readdata["DataSet_RealPartition"])
+		if self.readdata.has_key("DataSet_GeneratedPartition"):
+			self.win_generated_partition.set_loaded_settings(self.readdata["DataSet_GeneratedPartition"])
+		# self.check_time.set_active(self.readdata["ShowTime"])
 
 		infile.close()
 		print "Configuration Loaded Successfully."
